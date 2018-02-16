@@ -5,7 +5,7 @@ import main.server.Log;
 import java.sql.*;
 
 public class ConnectionHelper {
-    private static String DB_URL = "",
+    private static String DB_URL = "jdbc:mysql://localhost:3306/project_starter?serverTimezone=UTC&useSSL=false",
         DB_USER = "root", DB_PASS="root";
     private Connection connection;
     public ConnectionHelper() {

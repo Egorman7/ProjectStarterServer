@@ -1,6 +1,11 @@
 package main.server;
 
+import main.server.database.Connector;
+import main.server.database.connection.ConnectionHelper;
+import main.server.database.model.ProjectModel;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -8,8 +13,9 @@ import static spark.Spark.*;
 public class Server {
     private static int PORT = 1488;
     private static String ACCEPT_TYPE="application/json";
+    private Connector connector;
     public Server() {
-
+        connector = new Connector(new ConnectionHelper());
     }
     public void start(){
         try {
@@ -22,12 +28,13 @@ public class Server {
     }
 
     private void setUpRoutes(){
-        get("/kek", ACCEPT_TYPE, (req, res) -> {
-            Map<String, String> map = new HashMap<String,String>();
-            map.put("Kek", "Lol");
-            Log.d("KEK", req.ip() + " connected!");
-            return map;
-        }, new JsonTransformer());
+        path("/projects", () -> {
+            get("/new", ACCEPT_TYPE, (req, res) -> {
+                List<ProjectModel> projects = connector.getProjects(Connector.PROJ_NEW);
+                Log.d("[GET_PROJECTS_NEW]",req.ip() + " " + req.host() + " got new projects!");
+                return projects;
+            }, new JsonTransformer());
+        });
     }
 
     public void stop(){
